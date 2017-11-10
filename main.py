@@ -156,61 +156,8 @@ for rounds in range(0,config.getEpochs()):
         model.fit(X, Y,initial_epoch=rounds, epochs=rounds+1,batch_size=1,shuffle=True, validation_data=(Xt,Yt))
 print "ok"
 
-        OutEND = config.getTargetColumns()[1]
-        history_window = config.getWindows()[0]
-        future_window = config.getWindows()[1]        
-            
-        X_train = dataset[:,InBEGIN:InEND]      #Input data
-        Y_train = dataset[:,OutBEGIN:OutEND]    #Output data
-            
-        #Transform NxM matrix into sliding window structure 
-        X = None
-        nb_samples = len(X_train) - history_window - future_window
-        input_list = [np.expand_dims(np.atleast_2d(X_train[i:history_window+i,:]), axis=0) for i in range(0, nb_samples)] #nb_samples=length of total input
-        X = np.concatenate(input_list, axis=0)
-        Y = None
-        nb_samples = len(Y_train) - history_window - future_window 
-        input_list = [np.expand_dims(np.atleast_2d(Y_train[history_window+i:history_window+i+future_window,:]), axis=0) for i in range(0, nb_samples)] 
-        Y = np.concatenate(input_list, axis=0)
-        
-        #Make sure the data is a number
-        #TODO SHOULD THIS BE IMPLICITLY FLOAT OR SHOULD THE USER SELECT?
-        X = np.array(X,dtype=int)
-        Y = np.array(Y,dtype=int)
-        return X,Y,dataset
 
-config,Config = MakeConfig()
-iids = np.genfromtxt('/home/simon/Documents/LiClipse Workspace/MoviePrediction/iids.csv', delimiter=',',dtype=int) 
-
-
-X,Y,ds = getnewdata(iids[2],config)
-Xt,Yt,ds = getnewdata(iids[randint(config.getTestIndex()[0],config.getTestIndex()[1])],config)
-
-model = Sequential()
-s2s = SimpleSeq2Seq(batch_input_shape=(1, X.shape[1], X.shape[2]), hidden_dim=1, output_length=config.getWindows()[1], output_dim=1)
-model.add(s2s) 
-model.add(Dense(50,activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(99999,activation='softmax'))
-opt = optimizers.Nadam()
-model.compile(loss='sparse_categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
-
-for rounds in range(0,config.getEpochs()):
-    for index in range(config.getTrainIndex()[0],config.getTrainIndex()[1]):
-        print "Index ",index," Round ", rounds
-        X,Y,ds = getnewdata(iids[index],config)
-        r = randint(config.getTestIndex()[0],config.getTestIndex()[1])
-        print "random", r
-        Xt,Yt,ds = getnewdata(iids[r],config)
-        model.fit(X, Y,initial_epoch=rounds, epochs=rounds+1,batch_size=1,shuffle=True, validation_data=(Xt,Yt))
-print "ok"
-model_json = model.to_json()
-with open(Config.get("Target",'modelfile')+".json", "w") as json_file:
-    json_file.write(model_json)
-model.save_weights(Config.get("Target",'modelfile')+".h5")
-
-
-X,Y,ds = getnewdata(iids[0],config)
+X,Y,ds = getnewdata(iids[1000],config)
 out = model.predict(X, batch_size=1) 
 moviearray = np.array(out[0,0,:])
 
