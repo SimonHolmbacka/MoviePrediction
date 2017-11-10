@@ -16,8 +16,8 @@ Modelfile = /home/simon/Documents/LiClipse Workspace/MoviePrediction/output
 [Settings]
 HistoryWindow: 20
 FutureWindow: 1
-TrainIndexBegin: 0
-TrainIndexEnd: 50
+TrainIndexBegin: 150
+TrainIndexEnd: 200
 TestIndexBegin: 500
 TestIndexEnd: 600
-Epochs: 10
+Epochs: 3

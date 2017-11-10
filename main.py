@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import time
 from random import randint
 import matplotlib
-
+import webbrowser
 import ModelConfig
 import ConfigParser
 from seq2seq.models import SimpleSeq2Seq
@@ -84,8 +84,8 @@ def getnewdata(cellid,config):
         
         #Make sure the data is a number
         #TODO SHOULD THIS BE IMPLICITLY FLOAT OR SHOULD THE USER SELECT?
-        X = np.array(X,dtype=float)
-        Y = np.array(Y,dtype=float)
+        X = np.array(X,dtype=int)
+        Y = np.array(Y,dtype=int)
         return X,Y,dataset
         
 def updatedata(dataset):    
@@ -112,8 +112,8 @@ def updatedata(dataset):
     
     #Make sure the data is a number
     #TODO SHOULD THIS BE IMPLICITLY FLOAT OR SHOULD THE USER SELECT?
-    X = np.array(X,dtype=float)
-    Y = np.array(Y,dtype=float)
+    X = np.array(X,dtype=int)
+    Y = np.array(Y,dtype=int)
     return X,Y,dataset
     
 config,Config = MakeConfig()
@@ -137,9 +137,9 @@ X,Y,ds = getnewdata(iids[2],config)
 Xt,Yt,ds = getnewdata(iids[randint(config.getTestIndex()[0],config.getTestIndex()[1])],config)
 
 model = Sequential()
-s2s = SimpleSeq2Seq(batch_input_shape=(1, X.shape[1], X.shape[2]), hidden_dim=4, output_length=config.getWindows()[1], output_dim=1)
+s2s = SimpleSeq2Seq(batch_input_shape=(1, X.shape[1], X.shape[2]), hidden_dim=1, output_length=config.getWindows()[1], output_dim=1)
 model.add(s2s) 
-model.add(Dense(50,activation='relu'))
+model.add(Dense(40,activation='relu'))
 model.add(Dropout(0.2))
 model.add(Dense(2999,activation='softmax'))
 opt = optimizers.Nadam()
@@ -156,7 +156,7 @@ for rounds in range(0,config.getEpochs()):
 print "ok"
 
 
-X,Y,ds = getnewdata(iids[1000],config)
+X,Y,ds = getnewdata(iids[0],config)
 out = model.predict(X, batch_size=1) 
 moviearray = np.array(out[0,0,:])
 
@@ -164,24 +164,22 @@ for i in range(0,10):
     bestindex = np.argmax(moviearray)
     bestvalue = moviearray[bestindex]
     moviearray = np.delete(moviearray, range(bestindex,bestindex+1)) 
-    
+        
     imdbbase = sqlite3.connect('/home/simon/Documents/LiClipse Workspace/MoviePrediction/Links.sqlite')
     imdbbase.text_factory = str
     cursor = imdbbase.cursor()
     sql = "select distinct imdbId from main WHERE movieid == '%s'" % (bestindex)
     temp = cursor.execute(sql)
     temp = temp.fetchall()
-    imdbid = np.array(temp)[0][0]
-    
-    url ="http://www.imdb.com/title/tt"+str(imdbid)+"/"
-    webbrowser.open_new_tab(url)
-    
-    ds = ds[1:ds.shape[0]]
-    ds = np.append(ds,bestindex)  
-    ds = ds.reshape(174,1)
-    X,Y,ds = updatedata(ds)    
-    out = model.predict(X, batch_size=1) 
-    moviearray = np.array(out[0,0,:])
-    time.sleep(5)
+    if(len(temp)>0):
+        imdbid = np.array(temp)[0][0]
+            
+        url ="http://www.imdb.com/title/tt"+str(imdbid)+"/"
+        webbrowser.open_new_tab(url)
 
+    time.sleep(3)
 
+model_json = model.to_json()
+with open(Config.get("Target",'modelfile')+".json", "w") as json_file:
+    json_file.write(model_json)
+model.save_weights(Config.get("Target",'modelfile')+".h5")
