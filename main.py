@@ -116,18 +116,17 @@ def updatedata(dataset):
     Y = np.array(Y,dtype=float)
     return X,Y,dataset
     
-
 config,Config = MakeConfig()
+
 # out = None
-# for i in range(0,46292):
+# for i in range(0,iids.shape[0]):
 #     X,Y,ds = getnewdata(iids[i],config)
 #     if(np.isscalar(X) == False):
 #         print i
 #         out = np.append(out,iids[i])
-# 
 # iids = out
 # iids = iids[1:iids.shape[0]]
-# f_handle = file("iids.csv", 'w')
+# f_handle = file("/home/simon/Documents/LiClipse Workspace/MoviePrediction/iids.csv", 'w')
 # np.savetxt(f_handle, iids,  delimiter=",",fmt="%s")
 # f_handle.close()    
 
@@ -138,11 +137,11 @@ X,Y,ds = getnewdata(iids[2],config)
 Xt,Yt,ds = getnewdata(iids[randint(config.getTestIndex()[0],config.getTestIndex()[1])],config)
 
 model = Sequential()
-s2s = SimpleSeq2Seq(batch_input_shape=(1, X.shape[1], X.shape[2]), hidden_dim=1, output_length=config.getWindows()[1], output_dim=1)
+s2s = SimpleSeq2Seq(batch_input_shape=(1, X.shape[1], X.shape[2]), hidden_dim=4, output_length=config.getWindows()[1], output_dim=1)
 model.add(s2s) 
 model.add(Dense(50,activation='relu'))
 model.add(Dropout(0.2))
-model.add(Dense(9999,activation='softmax'))
+model.add(Dense(2999,activation='softmax'))
 opt = optimizers.Nadam()
 model.compile(loss='sparse_categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
