@@ -1,0 +1,23 @@
+[Columns]
+TrainColumnBegin: 0
+TrainColumnEnd: 1
+TargetColumnBegin: 0
+TargetColumnEnd: 1
+
+[Source]
+Database = /home/simon/Documents/LiClipse Workspace/MoviePrediction/Ratings.sqlite
+MinMax = /home/simon/Documents/LiClipse Workspace/MinMaxNovember.csv
+IdSource = /home/simon/Documents/LiClipse Workspace/IDsNovember.csv
+InterestingIdSource = /home/simon/Documents/LiClipse Workspace/IDsInterestingNovember.csv
+
+[Target]
+Modelfile = /home/simon/Documents/LiClipse Workspace/MoviePrediction/output
+
+[Settings]
+HistoryWindow: 20
+FutureWindow: 1
+TrainIndexBegin: 0
+TrainIndexEnd: 5
+TestIndexBegin: 500
+TestIndexEnd: 600
+Epochs: 20
