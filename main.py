@@ -79,10 +79,10 @@ def MakeConfig():
 
 
 def getnewdata(cellid,config):    
-sql = "select movieId from main WHERE userId == '%s'" % (cellid)
-temp = config.getDatabase().execute(sql)
-temp = temp.fetchall()
-dataset = np.array(temp)
+    sql = "select movieId from main WHERE userId == '%s'" % (cellid)
+    temp = config.getDatabase().execute(sql)
+    temp = temp.fetchall()
+    dataset = np.array(temp)
 #     dataset = dataset[0:20]
     del temp
     #Check that we have enough data to make a proper window
@@ -142,15 +142,15 @@ dataset = np.array(temp)
         return X,Y,dataset
 
 config,Config = MakeConfig()
-sql = "select distinct userid from main order by userid asc"
-temp = config.getDatabase().execute(sql)
-temp = temp.fetchall()
-dataset = np.array(temp)
-f_handle = file("/home/simon/Documents/LiClipse Workspace/MovieUsers.csv", 'w')
-np.savetxt(f_handle, dataset,  delimiter=",",fmt="%s")
-f_handle.close()
-ids = dataset
-ids = ids[:,0]
+# sql = "select distinct userid from main order by userid asc"
+# temp = config.getDatabase().execute(sql)
+# temp = temp.fetchall()
+# dataset = np.array(temp)
+# f_handle = file("/home/simon/Documents/LiClipse Workspace/MovieUsers.csv", 'w')
+# np.savetxt(f_handle, dataset,  delimiter=",",fmt="%s")
+# f_handle.close()
+# ids = dataset
+# ids = ids[:,0]
 # id = GetIDs(config.getIdSource())
 # iid = GetInterestingIDs(config.getIIdSource())
 
