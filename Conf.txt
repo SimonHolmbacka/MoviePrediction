@@ -5,7 +5,7 @@ TargetColumnBegin: 0
 TargetColumnEnd: 1
 
 [Source]
-Database = /home/simon/Documents/LiClipse Workspace/MoviePrediction/Ratings.sqlite
+Database = /home/simon/Documents/LiClipse Workspace/MoviePrediction/Movies_small.sqlite
 MinMax = /home/simon/Documents/LiClipse Workspace/MinMaxNovember.csv
 IdSource = /home/simon/Documents/LiClipse Workspace/IDsNovember.csv
 InterestingIdSource = /home/simon/Documents/LiClipse Workspace/IDsInterestingNovember.csv
@@ -20,4 +20,4 @@ TrainIndexBegin: 0
 TrainIndexEnd: 5
 TestIndexBegin: 500
 TestIndexEnd: 600
-Epochs: 20
+Epochs: 10
